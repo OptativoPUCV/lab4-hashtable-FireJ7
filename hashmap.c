@@ -101,23 +101,31 @@ HashMap * createMap(long capacity){
   return mapa;
 }
 
-void eraseMap(HashMap * map,  char * key) 
+void eraseMap(HashMap * map, char * key) 
 {
-  long posicion = hash(key, map->capacity);
-  long posicionOriginal = posicion;
-  while(map->buckets[posicion]!= NULL && map->buckets)
+    if (map == NULL || key == NULL) // Verificar si el puntero al mapa o la clave es nulo
+        return;
+
+    long posicion = hash(key, map->capacity);
+    long posicionOriginal = posicion;
+
+    while (map->buckets[posicion] != NULL) // Corregir la condición del bucle
     {
-      if(strcmp(map->buckets[posicion]->key, key) == 0)
-      {
-        map->buckets[posicion] = NULL;
-        map->size--;
-        return;
-      }
-      posicion = (posicion + 1) % map->capacity;
-      if(posicion == posicionOriginal)
-      {
-        return;
-      }
+        if (strcmp(map->buckets[posicion]->key, key) == 0)
+        {
+            free(map->buckets[posicion]); // Liberar memoria del par clave-valor eliminado
+            map->buckets[posicion] = NULL;
+            map->size--;
+            return;
+        }
+
+        posicion = (posicion + 1) % map->capacity;
+
+        if (posicion == posicionOriginal)
+        {
+            // Si hemos vuelto al inicio, significa que hemos recorrido todo el mapa sin encontrar la clave
+            return;
+        }
     }
 }
 
