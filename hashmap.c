@@ -144,18 +144,19 @@ Pair * searchMap(HashMap * map,  char * key)
 
 Pair * firstMap(HashMap * map) 
 {
-  if(map==NULL) return NULL;
-  for(int i=0;i<map->capacity;i++)
+    if (map == NULL) return NULL;
+
+    for (int i = 0; i < map->capacity; i++)
     {
-      if(map->buckets[i]!=NULL)
-      {
-        map->current=i;
-        return map->buckets[i];
-        
-      }
-      
+        if (map->buckets[i] != NULL)
+        {
+            map->current = i; // Asignación solo cuando se encuentra el primer bucket no nulo
+            return map->buckets[i];
+        }
     }
-  return NULL;
+
+    // Si no se encuentra ningún par no nulo, se devuelve NULL
+    return NULL;
 }
 
 Pair * nextMap(HashMap * map) 
