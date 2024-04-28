@@ -123,13 +123,29 @@ void eraseMap(HashMap * map, char * key)
             free(map->buckets[posicion]); // Liberar memoria del par clave-valor eliminado
             map->buckets[posicion] = NULL;
             map->size--;
+
+            // Actualizar la posición del elemento eliminado si es el primer elemento
+            if (posicion == posicionOriginal)
+            {
+                // Mover la posición al siguiente elemento no nulo o al primer elemento
+                for (long i = (posicion + 1) % map->capacity; i != posicionOriginal; i = (i + 1) % map->capacity)
+                {
+                    if (map->buckets[i] != NULL)
+                    {
+                        map->buckets[posicionOriginal] = map->buckets[i];
+                        map->buckets[i] = NULL;
+                        map->current = posicionOriginal;
+                        break;
+                    }
+                }
+            }
             return;
         }
 
         posicion = (posicion + 1) % map->capacity;
 
-        // Si hemos vuelto al inicio o hemos vuelto al primer bucket, salimos del bucle
-        if (posicion == posicionOriginal || (posicion == 0 && posicionOriginal != 0))
+        // Si hemos vuelto al inicio, salimos del bucle
+        if (posicion == posicionOriginal)
         {
             return;
         }
