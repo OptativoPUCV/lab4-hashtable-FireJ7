@@ -16,30 +16,35 @@ struct HashMap {
     long current; //indice del ultimo dato accedido
 };
 
-Pair * createPair( char * key,  void * value) {
+Pair * createPair( char * key,  void * value) 
+{
     Pair * new = (Pair *)malloc(sizeof(Pair));
     new->key = key;
     new->value = value;
     return new;
 }
 
-long hash( char * key, long capacity) {
+long hash( char * key, long capacity) 
+{
     unsigned long hash = 0;
      char * ptr;
-    for (ptr = key; *ptr != '\0'; ptr++) {
+    for (ptr = key; *ptr != '\0'; ptr++) 
+    {
         hash += hash*32 + tolower(*ptr);
     }
     return hash%capacity;
 }
 
-int is_equal(void* key1, void* key2){
+int is_equal(void* key1, void* key2)
+{
     if(key1==NULL || key2==NULL) return 0;
     if(strcmp((char*)key1,(char*)key2) == 0) return 1;
     return 0;
 }
 
 
-void insertMap(HashMap * map, char * key, void * value){
+void insertMap(HashMap * map, char * key, void * value)
+{
   long posicion = hash(key, map->capacity);
   long posicionOriginal = posicion;
 
@@ -62,8 +67,9 @@ void insertMap(HashMap * map, char * key, void * value){
 }
 
 
-void enlarge(HashMap * map) {
-  //enlarge_called = 1; //no borrar (testing purposes)
+void enlarge(HashMap * map) 
+{
+  enlarge_called = 1; //no borrar (testing purposes)
   Pair** old = map->buckets;
 
   map->capacity *= 2;
@@ -81,7 +87,8 @@ void enlarge(HashMap * map) {
   free(old);
 }
 
-HashMap * createMap(long capacity){
+HashMap * createMap(long capacity)
+{
   HashMap *mapa = (HashMap*)malloc(sizeof(HashMap));
   if(mapa == NULL)
   {
@@ -109,7 +116,7 @@ void eraseMap(HashMap * map, char * key)
     long posicion = hash(key, map->capacity);
     long posicionOriginal = posicion;
 
-    while (map->buckets[posicion] != NULL) // Corregir la condición del bucle
+    while (map->buckets[posicion] != NULL) 
     {
         if (strcmp(map->buckets[posicion]->key, key) == 0)
         {
@@ -121,9 +128,9 @@ void eraseMap(HashMap * map, char * key)
 
         posicion = (posicion + 1) % map->capacity;
 
-        if (posicion == posicionOriginal)
+        // Si hemos vuelto al inicio o hemos vuelto al primer bucket, salimos del bucle
+        if (posicion == posicionOriginal || (posicion == 0 && posicionOriginal != 0))
         {
-            // Si hemos vuelto al inicio, significa que hemos recorrido todo el mapa sin encontrar la clave
             return;
         }
     }
