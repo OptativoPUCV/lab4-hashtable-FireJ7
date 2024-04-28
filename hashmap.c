@@ -127,7 +127,6 @@ void eraseMap(HashMap * map, char * key)
             return;
         }
     }
-}
 
 Pair * searchMap(HashMap * map,  char * key) 
 {
@@ -156,7 +155,7 @@ Pair * firstMap(HashMap * map)
 
     for (int i = 0; i < map->capacity; i++)
     {
-        if (map->buckets[i] != NULL)
+        if (map->buckets[i] != NULL && map->buckets[i]->key != NULL) // Verificar si el par no es nulo y tiene una clave válida
         {
             map->current = i; // Asignación solo cuando se encuentra el primer bucket no nulo
             return map->buckets[i];
