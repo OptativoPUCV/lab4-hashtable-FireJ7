@@ -108,10 +108,13 @@ HashMap * createMap(long capacity)
   return mapa;
 }
 
-void eraseMap(HashMap * map,  char * key) {
+void eraseMap(HashMap * map,  char * key) 
+{
     long posicion = hash(key,map->capacity);
-    while(map->buckets[posicion]!=NULL && map->buckets[posicion]->key!=NULL){
-        if(is_equal(map->buckets[posicion]->key,key)){
+    while(map->buckets[posicion]!=NULL && map->buckets[posicion]->key!=NULL)
+    {
+        if(is_equal(map->buckets[posicion]->key,key))
+        {
             map->buckets[posicion]->key=NULL;
             map->buckets[posicion]->value=NULL;
             map->size--;
@@ -126,6 +129,7 @@ Pair * searchMap(HashMap * map,  char * key)
 {
   long posicion = hash(key, map->capacity);
   long posicionOriginal = posicion;
+  
   while(map->buckets[posicion]!= NULL && map->buckets)
     {
       if(strcmp(map->buckets[posicion]->key, key) == 0)
