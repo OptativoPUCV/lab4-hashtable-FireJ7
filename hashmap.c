@@ -115,6 +115,7 @@ void eraseMap(HashMap * map, char * key)
 
     long posicion = hash(key, map->capacity);
     long posicionOriginal = posicion;
+    int firstFound = -1; // Indicador para el primer par encontrado
 
     while (map->buckets[posicion] != NULL) 
     {
@@ -124,25 +125,17 @@ void eraseMap(HashMap * map, char * key)
             map->buckets[posicion] = NULL;
             map->size--;
 
-            // Si estamos eliminando el primer par, marcamos el primer bucket como NULL pero no lo eliminamos
-            if (posicion == 0)
-            {
-                return;
-            }
+            if (firstFound == -1) // Si es el primer par encontrado, lo marcamos
+                firstFound = posicion;
 
-            // Actualizar la posición del elemento eliminado si es el primer elemento
-            if (posicion == posicionOriginal)
+            // Mover los pares clave-valor restantes hacia adelante en el arreglo de buckets
+            for (long i = (posicion + 1) % map->capacity; i != posicionOriginal; i = (i + 1) % map->capacity)
             {
-                // Mover la posición al siguiente elemento no nulo o al primer elemento
-                for (long i = (posicion + 1) % map->capacity; i != posicionOriginal; i = (i + 1) % map->capacity)
+                if (map->buckets[i] != NULL)
                 {
-                    if (map->buckets[i] != NULL)
-                    {
-                        map->buckets[posicionOriginal] = map->buckets[i];
-                        map->buckets[i] = NULL;
-                        map->current = posicionOriginal;
-                        break;
-                    }
+                    map->buckets[firstFound] = map->buckets[i];
+                    map->buckets[i] = NULL;
+                    firstFound = i;
                 }
             }
             return;
