@@ -110,24 +110,54 @@ HashMap * createMap(long capacity)
 
 void eraseMap(HashMap * map, char * key) 
 {
-  long posicion = hash(key, map->capacity);
-  long posicionOriginal = posicion;
-  while(map->buckets[posicion] != NULL && map->buckets[posicion]->key != NULL)
+    if (map == NULL || key == NULL) // Verificar si el puntero al mapa o la clave es nulo
+        return;
+
+    long posicion = hash(key, map->capacity);
+    long posicionOriginal = posicion;
+
+    while (map->buckets[posicion] != NULL) 
     {
-      if(strcmp(map->buckets[posicion]->key, key) == 0)
-      {
-        map->buckets[posicion] = NULL;
-        map->size--;
-        return;
-      }
-      posicion = (posicion + 1) % map->capacity;
-      if(posicion == posicionOriginal)
-      {
-        return;
-      }
+        if (strcmp(map->buckets[posicion]->key, key) == 0)
+        {
+            free(map->buckets[posicion]); // Liberar memoria del par clave-valor eliminado
+            map->buckets[posicion] = NULL;
+            map->size--;
+
+            // Si estamos eliminando el primer par, marcamos el primer bucket como NULL pero no lo eliminamos
+            if (posicion == 0)
+            {
+                return;
+            }
+
+            // Actualizar la posición del elemento eliminado si es el primer elemento
+            if (posicion == posicionOriginal)
+            {
+                // Mover la posición al siguiente elemento no nulo o al primer elemento
+                for (long i = (posicion + 1) % map->capacity; i != posicionOriginal; i = (i + 1) % map->capacity)
+                {
+                    if (map->buckets[i] != NULL)
+                    {
+                        map->buckets[posicionOriginal] = map->buckets[i];
+                        map->buckets[i] = NULL;
+                        map->current = posicionOriginal;
+                        break;
+                    }
+                }
+            }
+            return;
+        }
+
+        posicion = (posicion + 1) % map->capacity;
+
+        // Si hemos vuelto al inicio, salimos del bucle
+        if (posicion == posicionOriginal)
+        {
+            return;
+        }
     }
-    
 }
+
 Pair * searchMap(HashMap * map,  char * key) 
 {
   long posicion = hash(key, map->capacity);
@@ -155,20 +185,19 @@ Pair * firstMap(HashMap * map)
 
     for (int i = 0; i < map->capacity; i++)
     {
-        if (map->buckets[i] != NULL && map->buckets[i]->key != NULL) // Verificar si el par no es nulo y tiene una clave válida
+        if (map->buckets[i] != NULL && map->buckets[i]->key != NULL)
         {
-            map->current = i; // Asignación solo cuando se encuentra el primer bucket no nulo
+            map->current = i; 
             return map->buckets[i];
         }
     }
-
-    // Si no se encuentra ningún par no nulo, se devuelve NULL
     return NULL;
 }
 
 Pair * nextMap(HashMap * map) 
 {  
   if(map==NULL) return NULL;
+  
   for(int i=map->current+1;i<map->capacity;i++)
     {
       if(map->buckets[i]!=NULL)
