@@ -144,14 +144,13 @@ void eraseMap(HashMap * map, char * key)
 
         posicion = (posicion + 1) % map->capacity;
 
-        // Si hemos vuelto al inicio, salimos del bucle
-        if (posicion == posicionOriginal)
+        // Si hemos vuelto al inicio o hemos vuelto al primer bucket y no encontramos la clave, salimos del bucle
+        if (posicion == posicionOriginal || (posicion == 0 && map->buckets[posicionOriginal]->key != NULL))
         {
             return;
         }
     }
 }
-
 Pair * searchMap(HashMap * map,  char * key) 
 {
   long posicion = hash(key, map->capacity);
