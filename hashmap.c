@@ -110,46 +110,23 @@ HashMap * createMap(long capacity)
 
 void eraseMap(HashMap * map, char * key) 
 {
-    if (map == NULL || key == NULL) // Verificar si el puntero al mapa o la clave es nulo
-        return;
-
-    long posicion = hash(key, map->capacity);
-    long posicionOriginal = posicion;
-
-    while (map->buckets[posicion] != NULL) 
+  long posicion = hash(key, map->capacity);
+  long posicionOriginal = posicion;
+  while(map->buckets[posicion]!= NULL && map->buckets)
     {
-        if (strcmp(map->buckets[posicion]->key, key) == 0)
-        {
-            free(map->buckets[posicion]); // Liberar memoria del par clave-valor eliminado
-            map->buckets[posicion] = NULL;
-            map->size--;
-
-            // Actualizar la posición del elemento eliminado si es el primer elemento
-            if (posicion == posicionOriginal)
-            {
-                // Mover la posición al siguiente elemento no nulo o al primer elemento
-                for (long i = (posicion + 1) % map->capacity; i != posicionOriginal; i = (i + 1) % map->capacity)
-                {
-                    if (map->buckets[i] != NULL)
-                    {
-                        map->buckets[posicionOriginal] = map->buckets[i];
-                        map->buckets[i] = NULL;
-                        map->current = posicionOriginal;
-                        break;
-                    }
-                }
-            }
-            return;
-        }
-
-        posicion = (posicion + 1) % map->capacity;
-
-        // Si hemos vuelto al inicio o hemos vuelto al primer bucket y no encontramos la clave, salimos del bucle
-        if (posicion == posicionOriginal || (posicion == 0 && map->buckets[posicionOriginal]->key != NULL))
-        {
-            return;
-        }
+      if(strcmp(map->buckets[posicion]->key, key) == 0)
+      {
+        map->buckets[posicion] = NULL;
+        map->size--;
+        return;
+      }
+      posicion = (posicion + 1) % map->capacity;
+      if(posicion == posicionOriginal)
+      {
+        return;
+      }
     }
+    
 }
 Pair * searchMap(HashMap * map,  char * key) 
 {
